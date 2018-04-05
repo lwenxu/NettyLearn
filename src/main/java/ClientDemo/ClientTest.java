@@ -26,7 +26,7 @@ public class ClientTest {
                 ChannelPipeline pipeline = Channels.pipeline();
                 pipeline.addLast("encoder", new StringEncoder());
                 pipeline.addLast("decoder", new StringDecoder());
-                pipeline.addLast("hiHandler", new HiHandler());
+                pipeline.addLast("hiHandler", new HelloHandler());
                 return pipeline;
             }
         });
