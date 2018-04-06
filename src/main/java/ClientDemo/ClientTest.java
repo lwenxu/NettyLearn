@@ -20,15 +20,13 @@ public class ClientTest {
         ClientBootstrap bootstrap = new ClientBootstrap();
         ExecutorService boss = Executors.newCachedThreadPool();
         ExecutorService worker = Executors.newCachedThreadPool();
-        bootstrap.setFactory(new NioClientSocketChannelFactory());
-        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
-            public ChannelPipeline getPipeline() throws Exception {
-                ChannelPipeline pipeline = Channels.pipeline();
-                pipeline.addLast("encoder", new StringEncoder());
-                pipeline.addLast("decoder", new StringDecoder());
-                pipeline.addLast("hiHandler", new HelloHandler());
-                return pipeline;
-            }
+        bootstrap.setFactory(new NioClientSocketChannelFactory(boss,worker));
+        bootstrap.setPipelineFactory(() -> {
+            ChannelPipeline pipeline = Channels.pipeline();
+            pipeline.addLast("encoder", new StringEncoder());
+            pipeline.addLast("decoder", new StringDecoder());
+            pipeline.addLast("hiHandler", new HelloHandler());
+            return pipeline;
         });
         ChannelFuture connect = bootstrap.connect(new InetSocketAddress("127.0.0.1", 8000));
         Scanner scanner = new Scanner(System.in);
